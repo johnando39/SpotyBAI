@@ -1,0 +1,2914 @@
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+/* Site-wide font, colors, background, and horizontal overflow behavior. */
+body {
+font-family: Circular, Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+min-height: 100vh;
+color: oklch(99.107% 0.00011 271.152);
+background: radial-gradient(ellipse at top left, rgba(255, 9, 9, 0.351) 0%, transparent 40%), var(--color-background);
+overflow-x: hidden;
+
+
+--color-background: #000000;
+}
+
+.music-page {
+--now-playing-width: clamp(320px, 26vw, 380px);
+}
+
+.music-page.now-playing-hidden {
+--now-playing-width: 0px;
+}
+
+/* Keeps the home page and its two content sections within one screen. */
+.home-page {
+	height: 100vh;
+	height: 100dvh;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+/* SIDEBAR */
+/* Fixed navigation panel on the left side of desktop pages. */
+header {
+width: 450px;
+height: 200vh;
+padding: 28px 20px;
+display: flex;
+flex-direction: column;
+align-items: stretch;
+gap: 28px;
+position: fixed;
+inset: 0 auto 0 0;
+z-index: 2;
+background: rgba(24, 24, 24, 0.94);
+border-right: 1px solid rgba(255, 255, 255, 0.08);
+backdrop-filter: blur(12px);
+}
+
+/* LOGO */
+/* Arranges the logo image and SpotyBAI name side by side. */
+.logo {
+display: flex;
+align-items: center;
+gap: 12px;
+font-size: 32px;
+font-weight: bold;
+white-space: nowrap;
+color: #FFFFFF;
+text-decoration: none;
+}
+
+/* Displays the logo image at a fixed size. */
+.logo-icon {
+width: 54px;
+height: 54px;
+border-radius: 50%;
+background: #1DB954;
+color: var(--color-background);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 28px;
+}
+
+/* Highlights the BAI part of the logo in the accent color. */
+.logo > div span {
+color: #699950;
+}
+
+/* NAVIGATION */
+/* Stacks the navigation links vertically in the sidebar. */
+nav {
+display: flex;
+flex-direction: column;
+align-items: stretch;
+gap: 8px;
+}
+
+/* Styles each navigation link and its hover transition. */
+nav a,
+nav .nav-tab {
+color: #B3B3B3;
+text-decoration: none;
+font-size: 15px;
+padding: 14px 16px;
+border-radius: 6px;
+position: relative;
+transition: color 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
+}
+
+nav .nav-tab {
+display: flex;
+align-items: center;
+width: 100%;
+border: 0;
+background: transparent;
+font: inherit;
+text-align: left;
+cursor: pointer;
+}
+
+nav a i,
+nav .nav-tab i {
+width: 20px;
+margin-right: 10px;
+text-align: center;
+}
+
+/* Removes the decorative underline some stylesheets add to links. */
+nav a::after {
+content: none;
+}
+
+/* Shows which navigation link is current or hovered. */
+nav a:hover,
+nav a.active,
+nav .nav-tab:hover,
+nav .nav-tab.is-active {
+color: #869c65;
+background: rgba(167, 221, 131, 0.1);
+}
+
+/* Moves a hovered navigation link slightly to the right. */
+nav a:hover,
+nav .nav-tab:hover {
+transform: translateX(3px);
+}
+
+/* SIDEBAR PLAYLISTS SECTION */
+.sidebar-playlists {
+display: flex;
+flex-direction: column;
+gap: 10px;
+padding-top: 12px;
+border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-playlists-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 8px;
+padding: 0 4px;
+}
+
+.sidebar-section-label {
+font-size: 12px;
+font-weight: 700;
+letter-spacing: 0.08em;
+text-transform: uppercase;
+color: #B3B3B3;
+}
+
+.create-playlist-button {
+display: inline-flex;
+align-items: center;
+gap: 5px;
+padding: 5px 10px;
+border: 1px solid rgba(255, 255, 255, 0.14);
+border-radius: 999px;
+background: rgba(255, 255, 255, 0.06);
+color: #FFFFFF;
+font: inherit;
+font-size: 12px;
+font-weight: 600;
+cursor: pointer;
+transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.create-playlist-button:hover {
+background: rgba(29, 185, 84, 0.18);
+border-color: #1DB954;
+color: #1DB954;
+transform: translateY(-1px);
+}
+
+.custom-playlist-list {
+display: flex;
+flex-direction: column;
+gap: 4px;
+max-height: 220px;
+overflow-y: auto;
+scrollbar-width: thin;
+scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.playlist-sidebar-item {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 6px;
+border-radius: 6px;
+padding-right: 4px;
+transition: background-color 0.2s ease;
+}
+
+.playlist-sidebar-item:hover,
+.playlist-sidebar-item.is-active {
+background: rgba(167, 221, 131, 0.1);
+}
+
+.playlist-select-button {
+flex: 1;
+min-width: 0;
+display: flex;
+align-items: center;
+gap: 10px;
+padding: 10px 12px;
+border: 0;
+border-radius: 6px;
+background: transparent;
+color: #B3B3B3;
+font: inherit;
+font-size: 14px;
+text-align: left;
+cursor: pointer;
+transition: color 0.2s ease;
+}
+
+.playlist-sidebar-item.is-active .playlist-select-button,
+.playlist-select-button:hover {
+color: #869c65;
+}
+
+.playlist-select-name {
+overflow: hidden;
+text-overflow: ellipsis;
+white-space: nowrap;
+}
+
+.playlist-item-actions {
+display: flex;
+align-items: center;
+gap: 2px;
+flex: 0 0 auto;
+}
+
+.playlist-rename-icon-btn,
+.playlist-delete-icon-btn {
+flex: 0 0 auto;
+width: 26px;
+height: 26px;
+display: inline-grid;
+place-items: center;
+border: 0;
+border-radius: 50%;
+background: transparent;
+color: #9e9e9e;
+font-size: 12px;
+cursor: pointer;
+opacity: 0.75;
+transition: color 0.2s ease, background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.playlist-sidebar-item:hover .playlist-rename-icon-btn,
+.playlist-sidebar-item:hover .playlist-delete-icon-btn,
+.playlist-rename-icon-btn:focus-visible,
+.playlist-delete-icon-btn:focus-visible {
+opacity: 1;
+background: rgba(255, 255, 255, 0.1);
+}
+
+.playlist-rename-icon-btn:hover,
+.playlist-rename-icon-btn:focus-visible {
+color: #FFFFFF;
+}
+
+.playlist-delete-icon-btn:hover,
+.playlist-delete-icon-btn:focus-visible {
+color: #ff6b81;
+background: rgba(255, 71, 87, 0.14);
+}
+
+.playlist-empty-note {
+padding: 8px 12px;
+font-size: 12px;
+color: #8e8e8e;
+line-height: 1.4;
+}
+
+/* SEARCH BAR */
+/* Search field container, including its border and focus animation. */
+.search {
+display: flex;
+align-items: center;
+width: 100%;
+gap: 10px;
+padding: 12px 17px;
+border-radius: 8px;
+border: 1px solid rgba(112, 143, 51, 0.25);
+background: #181818;
+color: #B3B3B3;
+transition: border-color 0.25s ease, background-color 0.25s ease;
+}
+
+/* Highlights the search container while its input is focused. */
+.search:focus-within {
+border-color: #869c65;
+background: #202020;
+}
+
+/* Makes the search input fill the available space without its default border. */
+.search input {
+width: 100%;
+min-width: 0;
+background: transparent;
+border: none;
+outline: none;
+color: #FFFFFF;
+font-size: 14px;
+}
+
+/* Uses the muted text color for placeholder text. */
+.search input::placeholder {
+color: #B3B3B3;
+}
+
+/* Main music-library area; leaves room for the fixed sidebar and player. */
+.music-content {
+	margin-left: 260px;
+	margin-right: var(--now-playing-width);
+	min-height: 100vh;
+	padding: 52px clamp(20px, 5vw, 72px) 180px;
+}
+
+/* Centers the library and limits its width on large screens. */
+.library {
+	max-width: 1100px;
+	margin: 0 auto;
+}
+/* Playlist header area with cover art and details. */
+.playlist-header {
+	display: flex;
+	align-items: flex-end;
+	gap: 24px;
+	min-height: 270px;
+}
+
+.playlist-cover {
+	display: block;
+	width: clamp(150px, 20vw, 220px);
+	aspect-ratio: 1;
+	flex: 0 0 auto;
+	object-fit: cover;
+	border-radius: 6px;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+}
+
+.playlist-details {
+	min-width: 0;
+}
+
+.playlist-type {
+	margin-bottom: 8px;
+	font-size: 12px;
+	font-weight: 700;
+	text-transform: uppercase;
+}
+
+.library .playlist-details h1 {
+	margin: 0;
+	font-size: clamp(44px, 7vw, 82px);
+	font-weight: 800;
+	line-height: 1;
+	letter-spacing: -0.02em;
+	overflow-wrap: anywhere;
+}
+
+.playlist-meta {
+	display: flex;
+	align-items: center;
+	gap: 7px;
+	margin-top: 16px;
+	color: #B3B3B3;
+	font-size: 13px;
+}
+
+.playlist-meta img {
+	width: 25px;
+	height: 25px;
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+.playlist-meta strong {
+	color: #FFFFFF;
+}
+
+.playlist-actions {
+	margin-top: 16px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+.secondary-action-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	padding: 8px 14px;
+	border: 1px solid rgba(255, 255, 255, 0.18);
+	border-radius: 999px;
+	background: rgba(24, 24, 24, 0.85);
+	color: #FFFFFF;
+	font: inherit;
+	font-size: 13px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.secondary-action-button:hover {
+	background: rgba(29, 185, 84, 0.16);
+	border-color: #1DB954;
+	color: #1DB954;
+}
+
+.primary-action-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	padding: 8px 18px;
+	border: 0;
+	border-radius: 999px;
+	background: #1DB954;
+	color: #07140b;
+	font: inherit;
+	font-size: 13px;
+	font-weight: 700;
+	cursor: pointer;
+	transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.primary-action-button:hover {
+	background: #1ed760;
+	transform: translateY(-1px);
+}
+
+.danger-action-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	padding: 8px 16px;
+	border: 1px solid rgba(255, 71, 87, 0.45);
+	border-radius: 999px;
+	background: rgba(255, 71, 87, 0.16);
+	color: #ff6b81;
+	font: inherit;
+	font-size: 13px;
+	font-weight: 700;
+	cursor: pointer;
+	transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.danger-action-button:hover {
+	background: #ff4757;
+	border-color: #ff4757;
+	color: #FFFFFF;
+	transform: translateY(-1px);
+}
+
+/* Small uppercase label used above section titles. */
+.eyebrow {
+	color: #1DB954;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.16em;
+}
+
+/* Main title sizing that scales with the viewport. */
+.library h1 {
+	margin-top: 8px;
+	font-size: clamp(32px, 5vw, 48px);
+	letter-spacing: -0.04em;
+}
+
+/* Secondary text color shared by descriptions and artist details. */
+.library-intro,
+.muted {
+	color: #B3B3B3;
+}
+
+/* Adds space between the library title and its description. */
+.library-intro {
+	margin-top: 8px;
+}
+
+/* Automatically fits as many song cards per row as the screen allows. */
+.track-list {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+	gap: 18px;
+	margin-top: 32px;
+}
+
+/* Clickable song card layout and appearance. */
+.track-card {
+	position: relative;
+	min-width: 0;
+	padding: 14px;
+	border-radius: 9px;
+	border: 1px solid rgba(255, 255, 255, 0.04);
+	color: inherit;
+	text-align: left;
+	cursor: pointer;
+}
+
+/* Keeps cover art square and fills it without distorting the image. */
+.track-card img {
+	display: block;
+	width: 100%;
+	aspect-ratio: 1;
+	object-fit: cover;
+	border-radius: 6px;
+	margin-bottom: 14px;
+	background: #202020;
+}
+
+.track-card-body {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 6px;
+}
+
+.track-card-meta {
+	min-width: 0;
+	flex: 1;
+}
+
+.track-card-actions {
+	display: flex;
+	align-items: center;
+	gap: 2px;
+	flex: 0 0 auto;
+}
+
+/* Truncates long song titles and artist names to a single line. */
+.track-card strong,
+.track-card span {
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* Song title text inside a card. */
+.track-card strong {
+	font-size: 15px;
+}
+
+/* Artist text inside a card. */
+.track-card span {
+	margin-top: 5px;
+	font-size: 13px;
+	color: #B3B3B3;
+}
+
+.card-action-button {
+	flex: 0 0 auto;
+	width: 28px;
+	height: 28px;
+	display: inline-grid;
+	place-items: center;
+	border: 0;
+	border-radius: 50%;
+	background: transparent;
+	color: #B3B3B3;
+	font-size: 13px;
+	cursor: pointer;
+	transition: color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+}
+
+.card-action-button:hover {
+	color: #FFFFFF;
+	background: rgba(255, 255, 255, 0.08);
+	transform: scale(1.08);
+}
+
+.card-action-button.is-favorite,
+.favorite-button.is-favorite {
+	color: #ff4757;
+}
+
+.card-action-button.has-playlist,
+.playlist-add-button.has-playlist {
+	color: #1DB954;
+}
+
+.favorite-button:disabled,
+.playlist-add-button:disabled {
+	opacity: 0.45;
+	cursor: default;
+	transform: none;
+}
+
+/* Marks the card for the currently selected song. */
+.track-card.is-current {
+	border-color: rgba(29, 185, 84, 0.5);
+}
+
+/* Visible keyboard focus indicator for interactive controls. */
+.track-card:focus-visible,
+.card-action-button:focus-visible,
+.playlist-select-button:focus-visible,
+.playlist-rename-icon-btn:focus-visible,
+.playlist-delete-icon-btn:focus-visible,
+.create-playlist-button:focus-visible,
+.secondary-action-button:focus-visible,
+.primary-action-button:focus-visible,
+.danger-action-button:focus-visible,
+.modal-input:focus-visible,
+nav .nav-tab:focus-visible,
+.icon-button:focus-visible,
+.text-button:focus-visible {
+	outline: 2px solid #1DB954;
+	outline-offset: 3px;
+}
+
+/* Playlist Modals */
+.modal-backdrop {
+	position: fixed;
+	inset: 0;
+	z-index: 60;
+	display: grid;
+	place-items: center;
+	padding: 20px;
+	background: rgba(0, 0, 0, 0.72);
+	backdrop-filter: blur(6px);
+}
+
+.modal-backdrop[hidden] {
+	display: none;
+}
+
+.modal-card {
+	width: 100%;
+	max-width: 400px;
+	padding: 20px;
+	border-radius: 12px;
+	background: #181818;
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+}
+
+.modal-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.modal-header h2 {
+	font-size: 18px;
+}
+
+.modal-subtitle {
+	font-size: 13px;
+	margin-top: -6px;
+}
+
+.modal-copy {
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+.modal-form {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.modal-label {
+	font-size: 13px;
+	color: #B3B3B3;
+	font-weight: 600;
+}
+
+.modal-input {
+	width: 100%;
+	padding: 10px 12px;
+	border-radius: 8px;
+	border: 1px solid rgba(255, 255, 255, 0.16);
+	background: #222222;
+	color: #FFFFFF;
+	font: inherit;
+	font-size: 14px;
+}
+
+.modal-input:focus {
+	outline: none;
+	border-color: #1DB954;
+}
+
+.modal-error {
+	font-size: 12px;
+	color: #ff6b81;
+}
+
+.playlist-picker-list {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	max-height: 240px;
+	overflow-y: auto;
+}
+
+.playlist-picker-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	width: 100%;
+	padding: 10px 12px;
+	border-radius: 8px;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	background: #222222;
+	color: #FFFFFF;
+	font: inherit;
+	font-size: 14px;
+	cursor: pointer;
+	transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.playlist-picker-item:hover {
+	background: #2a2a2a;
+	border-color: rgba(29, 185, 84, 0.5);
+}
+
+.playlist-picker-item.is-added {
+	border-color: #1DB954;
+	background: rgba(29, 185, 84, 0.12);
+}
+
+.playlist-picker-badge {
+	font-size: 12px;
+	color: #1DB954;
+	font-weight: 600;
+}
+
+.modal-footer {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.modal-footer-actions {
+	gap: 8px;
+	margin-top: 6px;
+}
+
+/* Fixed now-playing sidebar with cover art and synchronized lyrics. */
+.now-playing-panel {
+	position: fixed;
+	z-index: 3;
+	inset: 0 0 0 auto;
+	width: var(--now-playing-width);
+	overflow: hidden;
+	background: #121212;
+	border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.now-playing-panel[hidden] {
+	display: none;
+}
+
+.now-playing-backdrop {
+	position: absolute;
+	inset: 0 0 auto;
+	height: 58%;
+	background-position: center;
+	background-size: cover;
+	filter: blur(18px);
+	opacity: 0.34;
+	transform: scale(1.05);
+	pointer-events: none;
+}
+
+.now-playing-backdrop::after {
+	position: absolute;
+	inset: 0;
+	content: "";
+	background: linear-gradient(180deg, rgba(18, 18, 18, 0.18), #121212 96%);
+}
+
+.now-playing-content {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	height: 100%;
+	overflow-y: auto;
+	padding: 8px 10px 12px;
+}
+
+.now-playing-header {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	min-height: 26px;
+	padding-right: 72px;
+	font-size: 14px;
+}
+
+.now-playing-header strong {
+	min-width: 0;
+	flex: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.now-playing-header .icon-button,
+.now-playing-track .icon-button {
+	color: #D0D0D0;
+}
+
+/* Shows the selected song artwork prominently in the sidebar. */
+.lyrics-cover,
+#track-video {
+	display: block;
+	width: 100%;
+	aspect-ratio: 9 / 16;
+	max-height: 42vh;
+	border-radius: 7px;
+	object-fit: cover;
+	background: #202020;
+}
+
+.lyrics-cover[hidden],
+#track-video[hidden] {
+	display: none;
+}
+
+.now-playing-track {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.now-playing-track h2 {
+	font-size: 20px;
+	letter-spacing: -0.03em;
+}
+
+.now-playing-track p {
+	margin-top: 2px;
+	font-size: 13px;
+}
+
+/* Lyrics sit in their own card below the current track details. */
+.lyrics-panel {
+	position: relative;
+	display: flex;
+	flex: 1 0 230px;
+	flex-direction: column;
+	min-height: 230px;
+	overflow: hidden;
+	padding: 14px;
+	border-radius: 8px;
+	background: #303030;
+	transition: flex-basis 0.25s ease, min-height 0.25s ease;
+}
+
+.lyrics-panel[hidden] {
+	display: none;
+}
+
+.lyrics-panel h3 {
+	margin-bottom: 12px;
+	font-size: 14px;
+}
+
+.lyrics-content {
+	flex: 1;
+	min-height: 0;
+	overflow-y: auto;
+	scrollbar-width: thin;
+	scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.lyrics-panel.is-collapsed .lyrics-content {
+	flex: 0 0 74px;
+	max-height: 74px;
+	overflow: hidden;
+	mask-image: linear-gradient(to bottom, #000 68%, transparent 100%);
+}
+
+.lyrics-panel.is-collapsed {
+	flex: 0 0 160px;
+	min-height: 160px;
+}
+
+.lyrics-toggle {
+	position: absolute;
+	right: 8px;
+	bottom: 8px;
+	z-index: 1;
+	flex: 0 0 auto;
+	padding: 7px 14px;
+	border: 0;
+	border-radius: 20px;
+	background: #F5F7F8;
+	color: #17232B;
+	font: inherit;
+	font-size: 12px;
+	font-weight: 700;
+	cursor: pointer;
+}
+
+.lyrics-toggle:hover {
+	background: #FFFFFF;
+}
+
+.lyrics-toggle[hidden] {
+	display: none;
+}
+
+.lyrics-panel:not(.is-collapsed) .lyrics-toggle {
+	position: static;
+	align-self: flex-end;
+	margin-top: 10px;
+}
+
+/* Makes timestamped lyrics prominent and easy to follow along with. */
+.lyrics-line {
+	display: block;
+	width: 100%;
+	padding: 6px 0;
+	border: 0;
+	background: transparent;
+	color: #A7A7A7;
+	text-align: left;
+	font: inherit;
+	font-size: 18px;
+	font-weight: 700;
+	line-height: 1.35;
+	cursor: pointer;
+	opacity: 0.72;
+	transition: color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+}
+
+.lyrics-line:hover {
+	color: #DADADA;
+	opacity: 1;
+}
+
+.lyrics-line.is-active {
+	color: #FFFFFF;
+	transform: translateX(4px);
+	opacity: 1;
+}
+
+.lyrics-placeholder {
+	color: #B3B3B3;
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+.lyrics-footer {
+	margin-top: 12px;
+	color: #B3B3B3;
+	font-size: 11px;
+}
+
+/* Player stays pinned to the bottom; grid columns divide its controls. */
+.player-bar {
+	position: fixed;
+	z-index: 4;
+	right: var(--now-playing-width);
+	bottom: 0;
+	left: 260px;
+	min-height: 98px;
+	padding: 14px 22px;
+	display: grid;
+	grid-template-columns: minmax(180px, 1fr) minmax(240px, 1.4fr) minmax(170px, 1fr);
+	align-items: center;
+	gap: 22px;
+	background: rgba(24, 24, 24, 0.98);
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
+	backdrop-filter: blur(16px);
+}
+
+/* Aligns the player sections and controls along their vertical center. */
+.player-track,
+.player-options,
+.volume-control,
+.transport,
+.timeline {
+	display: flex;
+	align-items: center;
+}
+
+/* Song artwork, title, artist, and lyrics button area. */
+.player-track {
+	min-width: 0;
+	gap: 10px;
+}
+
+/* Current song cover image dimensions and cropping. */
+.current-cover {
+	width: 54px;
+	height: 54px;
+	object-fit: cover;
+	border-radius: 5px;
+	background: #202020;
+}
+
+/* Prevents long track names from pushing other player controls out. */
+.current-track {
+	min-width: 0;
+	display: grid;
+	gap: 5px;
+}
+
+/* Keeps the current title and artist on single lines. */
+.current-track strong,
+.current-track span {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-size: 13px;
+}
+
+/* Text-style button used for actions such as opening lyrics. */
+.text-button {
+	padding: 7px 9px;
+	border: 0;
+	border-radius: 5px;
+	background: transparent;
+	color: #B3B3B3;
+	font: inherit;
+	font-size: 12px;
+	cursor: pointer;
+	transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+/* Highlights the text button when hovered or expanded. */
+.text-button:hover,
+.text-button[aria-expanded="true"] {
+	color: #FFFFFF;
+	background: rgba(255, 255, 255, 0.1);
+}
+
+/* Stacks playback controls above the timeline. */
+.player-controls {
+	min-width: 0;
+	display: grid;
+	gap: 6px;
+}
+
+/* Centers previous, play/pause, and next buttons. */
+.transport {
+	justify-content: center;
+	gap: 18px;
+}
+
+/* Round icon button appearance shared by player controls. */
+.icon-button {
+	width: 34px;
+	height: 34px;
+	display: inline-grid;
+	place-items: center;
+	flex: 0 0 auto;
+	border: 0;
+	border-radius: 50%;
+	background: transparent;
+	color: #B3B3B3;
+	font: inherit;
+	cursor: pointer;
+	transition: color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+}
+
+/* Hover feedback for player icon buttons. */
+.icon-button:hover {
+	color: #FFFFFF;
+	background: rgba(133, 34, 34, 0.1);
+	transform: scale(1.06);
+}
+
+/* Makes the central play/pause button slightly larger. */
+.play-button.player-play {
+	width: 36px;
+	height: 36px;
+	font-size: 14px;
+	border-radius: 50%;
+	border: 0;
+	background: #FFFFFF;
+	color: #121212;	
+}
+
+/* Timeline text and elapsed/total time alignment. */
+.timeline {
+	gap: 9px;
+	color: #B3B3B3;
+	font-size: 11px;
+	font-variant-numeric: tabular-nums;
+}
+
+/* Accent-colored range controls for seeking and volume. */
+.timeline input,
+.volume-control input {
+	height: 4px;
+	accent-color: #88ad76;
+	cursor: pointer;
+}
+
+/* Lets the seek bar use the remaining timeline width. */
+.timeline input {
+	width: 100%;
+}
+
+/* Shows that seeking is unavailable before a song is loaded. */
+.timeline input:disabled {
+	cursor: default;
+	opacity: 0.5;
+}
+
+/* Aligns the volume controls at the right side. */
+.player-options {
+	justify-content: flex-end;
+	gap: 12px;
+}
+
+/* Spacing between the mute button and volume slider. */
+.volume-control {
+	gap: 8px;
+}
+
+/* Keeps the volume icon light in both its initial and muted states. */
+.volume-control .icon-button {
+	color: white;
+}
+
+.volume-control .icon-button i {
+	color: inherit;
+}
+
+/* Responsive width for the volume slider. */
+.volume-control input {
+	width: clamp(65px, 8vw, 110px);
+}
+
+/* Small status message displayed above the player when needed. */
+.player-status {
+	position: absolute;
+	right: 22px;
+	bottom: calc(100% + 6px);
+	padding: 6px 10px;
+	border-radius: 5px;
+	background: rgba(24, 24, 24, 0.94);
+	color: #B3B3B3;
+	font-size: 12px;
+	pointer-events: none;
+}
+
+/* Hides the status message when it has no text. */
+.player-status:empty {
+	display: none;
+}
+
+@media (max-width: 1000px) and (min-width: 761px) {
+	.music-page {
+		--now-playing-width: 280px;
+	}
+
+	.player-bar {
+		min-height: 140px;
+		padding: 8px 12px;
+		grid-template-columns: minmax(0, 1fr) auto;
+		gap: 5px 8px;
+	}
+
+	.player-track {
+		grid-column: 1;
+		grid-row: 1;
+	}
+
+	.player-controls {
+		grid-column: 1 / -1;
+		grid-row: 2;
+	}
+
+	.player-options {
+		grid-column: 2;
+		grid-row: 1;
+		gap: 2px;
+	}
+
+	.volume-control input {
+		width: 48px;
+	}
+
+}
+
+/* WELCOME SECTION */
+/* Home page welcome area, positioned beside the fixed sidebar. */
+.hero {
+margin-left: 260px;
+min-height: 55vh;
+padding: 60px 20px;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: flex-start;
+text-align: center;
+position: relative;
+}
+
+/* Places the welcome text between the horizontal accent lines. */
+.welcome {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 28px;
+width: 100%;
+margin-top: 0;
+}
+
+/* Decorative accent line beside the welcome heading. */
+.line {
+width: 12%;
+max-width: 180px;
+height: 2px;
+background: linear-gradient(90deg, transparent, #88ad76);
+}
+
+/* Reverses the gradient for the right-side decorative line. */
+.line.right {
+background: linear-gradient(90deg, #88ad76, transparent);
+}
+
+/* Responsive welcome heading typography. */
+.welcome h1 {
+font-size: clamp(34px, 5.5vw, 68px);
+line-height: 1.15;
+letter-spacing: -2px;
+font-weight: 800;
+color: #FFFFFF;
+}
+
+/* Colors the BAI! part of the welcome heading. */
+.welcome h1 span {
+color: #699950;
+}
+
+/* Lets the welcome and About areas share the home page height equally. */
+.home-page .hero,
+.home-page .about-section {
+	flex: 1 1 0;
+	min-height: 0;
+}
+
+/* Responsive spacing inside the welcome area. */
+.home-page .hero {
+	padding-top: clamp(24px, 6vh, 60px);
+	padding-bottom: clamp(24px, 6vh, 60px);
+}
+
+/* Responsive spacing inside the About area. */
+.home-page .about-section {
+	padding-top: clamp(20px, 5vh, 48px);
+	padding-bottom: clamp(20px, 5vh, 48px);
+}
+
+/* About section positioned beside the sidebar on desktop. */
+.about-section {
+	margin-left: 260px;
+	min-height: 60vh;
+	padding: 80px clamp(20px, 8vw, 120px);
+	scroll-margin-top: 24px;
+}
+
+/* About section heading size and spacing. */
+.about-section h2 {
+	margin-top: 10px;
+	font-size: clamp(28px, 4vw, 42px);
+	letter-spacing: -0.04em;
+}
+
+/* About description width, color, and line spacing. */
+.about-section > p:last-child {
+	max-width: 700px;
+	margin-top: 18px;
+	color: #B3B3B3;
+	font-size: 17px;
+	line-height: 1.8;
+}
+
+/* Reusable hover treatments for music cards and playback controls. */
+/* Shared surface color and smooth hover transition for cards. */
+.card {
+background: #181818;
+transition: transform 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Lifts a card and adds a shadow on hover. */
+.card:hover {
+transform: translateY(-4px);
+background: #202020;
+box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
+}
+
+/* Smooth hover animation for the play/pause button. */
+.play-button {
+transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Makes the play/pause button stand out while hovered. */
+.play-button:hover {
+transform: scale(1.08);
+background-color: #FFFFFF;
+box-shadow: 0 0 18px rgba(255, 255, 255, 0.2);
+}
+
+/* Keyboard focus indicator for navigation and play/pause controls. */
+nav a:focus-visible,
+.play-button:focus-visible {
+outline: 2px solid #1DB954;
+outline-offset: 4px;
+}
+
+/* DECORATIVE BACKGROUND */
+/* Soft blurred green lights behind the page content. */
+.glow {
+position: fixed;
+width: 350px;
+height: 350px;
+border-radius: 50%;
+background: #1DB954;
+filter: blur(120px);
+opacity: 0.13;
+pointer-events: none;
+z-index: -1;
+}
+
+/* Places the first decorative glow near the upper-left corner. */
+.glow.one {
+top: 120px;
+left: -180px;
+}
+
+/* Places the second decorative glow near the lower-right corner. */
+.glow.two {
+bottom: -200px;
+right: -100px;
+}
+
+/* Phone POV */
+/* Reflows the sidebar, library, and player for narrow screens. */
+@media (max-width: 760px) {
+/* Changes the fixed desktop sidebar into a normal top header. */
+header {
+	width: 100%;
+	height: auto;
+	min-height: 0;
+	padding: 18px 20px;
+	gap: 18px;
+	position: relative;
+	border-right: 0;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Reduces logo text size on phones. */
+.logo {
+	font-size: 28px;
+}
+
+/* Reduces logo image size on phones. */
+.logo-icon {
+	width: 44px;
+	height: 44px;
+}
+
+/* Displays navigation links in a horizontal row on phones. */
+nav {
+	flex-direction: row;
+	flex-wrap: wrap;
+	gap: 4px;
+}
+
+/* Reduces navigation link padding on phones. */
+nav a,
+nav .nav-tab {
+	padding: 10px 12px;
+	width: auto;
+}
+
+.custom-playlist-list {
+	max-height: 130px;
+}
+
+/* Prevents the search bar from growing too wide on phones. */
+.search {
+	max-width: 360px;
+}
+
+/* Removes desktop sidebar spacing from the welcome area. */
+.hero {
+	margin-left: 0;
+	min-height: 40vh;
+}
+
+/* Removes desktop sidebar spacing and reduces padding on phones. */
+.about-section {
+	margin-left: 0;
+	padding: 56px 24px;
+}
+
+/* Compact About spacing so its text fits more comfortably on small screens. */
+.home-page .about-section {
+	padding: 16px 24px;
+}
+
+/* Slightly smaller About description for phone layouts. */
+.home-page .about-section > p:last-child {
+	margin-top: 10px;
+	font-size: 15px;
+	line-height: 1.5;
+}
+
+/* Removes desktop sidebar spacing from the music library on phones. */
+.music-content {
+	margin-left: 0;
+	margin-right: 0;
+	min-height: 70vh;
+	padding: 32px 18px 240px;
+}
+
+.playlist-header {
+	gap: 16px;
+	min-height: 0;
+}
+
+.playlist-cover {
+	width: clamp(112px, 32vw, 170px);
+}
+
+.library .playlist-details h1 {
+	font-size: clamp(34px, 9vw, 54px);
+}
+
+.playlist-meta {
+	flex-wrap: wrap;
+	gap: 5px;
+	margin-top: 10px;
+	font-size: 12px;
+}
+
+.playlist-meta img {
+	width: 22px;
+	height: 22px;
+}
+
+/* Repositions player sections into two rows on phones. */
+.player-bar {
+	left: 0;
+	right: 0;
+	min-height: 154px;
+	padding: 10px 14px;
+	grid-template-columns: minmax(0, 1fr) auto;
+	gap: 5px 12px;
+}
+
+/* Places track details in the top-left of the phone player. */
+.player-track {
+	grid-column: 1;
+	grid-row: 1;
+}
+
+/* Places playback controls across the bottom row. */
+.player-controls {
+	grid-column: 1 / -1;
+	grid-row: 2;
+}
+
+/* Places volume controls in the top-right. */
+.player-options {
+	grid-column: 2;
+	grid-row: 1;
+	gap: 4px;
+}
+
+/* Tightens spacing around the volume controls on phones. */
+.volume-control {
+	gap: 2px;
+}
+
+/* Keeps the volume slider compact on phones. */
+.volume-control input {
+	width: 66px;
+}
+
+.now-playing-panel {
+	display: none;
+}
+
+.now-playing-panel.is-mobile-open {
+	position: fixed;
+	inset: 12px 12px 170px;
+	z-index: 6;
+	display: block;
+	width: auto;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 8px;
+	box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+}
+
+.now-playing-panel.is-mobile-open .now-playing-content {
+	padding: 8px 10px 12px;
+}
+
+.now-playing-panel.is-mobile-open .now-playing-header {
+	padding-right: 0;
+}
+
+}
+
+/* Reduces or removes motion for people who prefer less animation. */
+@media (prefers-reduced-motion: reduce) {
+* {
+	scroll-behavior: auto !important;
+	transition-duration: 0.01ms !important;
+}
+}
+
+
+/* =====================================
+   SPOTYBAI HOMEPAGE BACKGROUND
+===================================== */
+
+/* Main background image */
+.home-page {
+    position: relative;
+    isolation: isolate;
+
+    background: #000000;
+}
+
+/* Background image layer */
+.home-background {
+    position: fixed;
+    inset: 0;
+
+    z-index: -2;
+
+    background-image:
+        linear-gradient(
+            rgba(0, 0, 0, 0.55),
+            rgba(0, 0, 0, 0.75)
+        ),
+        url("images/minji.jpeg");
+
+    background-size: 70%;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    transition: background-image 0.4s ease;
+}
+
+/* Keep homepage content above background */
+.home-page .sidebar,
+.home-page .hero,
+.home-page .about-section {
+    position: relative;
+    z-index: 1;
+}
+
+/* Background changer button */
+.background-controls {
+    position: absolute;
+
+    top: 20px;
+    right: 30px;
+
+    z-index: 5;
+}
+
+/* Button design */
+.bg-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+
+    padding: 12px 20px;
+
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 30px;
+
+    background: rgba(20,20,20,0.75);
+    backdrop-filter: blur(12px);
+
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.3s ease;
+}
+
+/* Hover effect */
+.bg-button:hover {
+    background: #1DB954;
+    color: #000000;
+
+    transform: translateY(-3px);
+
+    box-shadow: 0 5px 20px rgba(29,185,84,0.3);
+}
+
+
+
+/* =====================================
+   SPOTYBAI BACKGROUND CHANGER
+===================================== */
+
+/* Homepage background */
+.home-page {
+    position: relative;
+    isolation: isolate;
+    background: #000;
+}
+
+/* Background image layer */
+.home-page .home-background {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+
+    z-index: 0;
+    pointer-events: none;
+
+    background-image:
+        linear-gradient(
+            rgba(0, 0, 0, 0.45),
+            rgba(0, 0, 0, 0.75)
+        ),
+        url("images/Gradient Fog.jpeg");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Keep homepage content above background */
+.home-page .hero,
+.home-page .about-section {
+    position: relative;
+    z-index: 1;
+}
+
+/* Background changer */
+.home-page .bg-switcher {
+    position: fixed;
+    top: 110px;
+    right: 25px;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    width: auto;
+    height: auto;
+
+    padding: 12px 16px;
+
+    background: rgba(15, 15, 15, 0.75);
+    backdrop-filter: blur(15px);
+
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 30px;
+
+    z-index: 10;
+}
+
+.home-page .bg-switcher span {
+    color: white;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.home-page input[name="background"] {
+    display: none;
+}
+
+/* Background selection circles */
+.home-page .bg-switcher label {
+    width: 22px;
+    height: 22px;
+    flex: 0 0 22px;
+
+    display: block;
+
+    border: 2px solid #888;
+    border-radius: 50%;
+
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.home-page .bg-switcher label:hover {
+    transform: scale(1.15);
+    border-color: white;
+}
+
+/* Background thumbnails */
+.home-page .bg-switcher label[for="bg1"] {
+    background: url("images/Gradient Fog.jpeg") center/cover;
+}
+
+.home-page .bg-switcher label[for="bg2"] {
+    background: url("images/rere.jpeg") center/cover;
+}
+
+.home-page .bg-switcher label[for="bg3"] {
+    background: url("images/b3.jpeg") center/cover;
+}
+
+.home-page .bg-switcher label[for="bg4"] {
+    background: url("images/b1.jpeg") center/cover;
+}
+
+/* Active selection */
+#bg1:checked ~ .bg-switcher label[for="bg1"],
+#bg2:checked ~ .bg-switcher label[for="bg2"],
+#bg3:checked ~ .bg-switcher label[for="bg3"],
+#bg4:checked ~ .bg-switcher label[for="bg4"] {
+    border: 2px solid #1DB954;
+    box-shadow: 0 0 10px #1DB954;
+    transform: scale(1.15);
+}
+
+/* Change background images */
+#bg1:checked ~ .home-background {
+    background-image:
+        linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.75)),
+        url("images/Gradient Fog.jpeg");
+}
+
+#bg2:checked ~ .home-background {
+    background-image:
+        linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.75)),
+        url("images/rere.jpeg");
+}
+
+#bg3:checked ~ .home-background {
+    background-image:
+        linear-gradient(rgba(0, 0, 0, 0.45), rgba(0,0,0,.75)),
+        url("images/b3.jpeg");
+}
+
+#bg4:checked ~ .home-background {
+    background-image:
+        linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.75)),
+        url("images/b1.jpeg");
+}
+
+/* Mobile layout */ 
+@media (max-width: 760px) {
+    .home-page .bg-switcher {
+        top: auto;
+        bottom: 20px;
+        right: 15px;
+        gap: 8px;
+        padding: 10px 12px;
+    }
+
+    .home-page .bg-switcher label {
+        width: 20px;
+        height: 20px;
+        flex-basis: 20px;
+    }
+}
+
+
+/* =========================================================
+   HOMEPAGE FIT FIX
+   Keeps the sidebar and homepage content inside the viewport.
+========================================================= */
+
+.home-page {
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+    display: block;
+    position: relative;
+}
+
+/* Keep the sidebar fixed and make its width match the content offset. */
+.home-page header.sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: clamp(220px, 20vw, 260px);
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    padding: 28px 20px;
+    overflow-y: auto;
+    z-index: 5;
+}
+
+/* Make the two homepage sections share the space to the right
+   of the sidebar, rather than sitting underneath it. */
+.home-page .hero,
+.home-page .about-section {
+    box-sizing: border-box;
+    width: calc(100% - clamp(220px, 20vw, 260px));
+    margin-left: clamp(220px, 20vw, 260px);
+    min-width: 0;
+    min-height: 0;
+    height: 44%;
+    flex: 0 0 auto;
+}
+
+/* Center the welcome heading vertically and horizontally. */
+.home-page .hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(20px, 4vh, 48px) clamp(18px, 3vw, 48px);
+    text-align: center;
+}
+
+.home-page .welcome {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0;
+    gap: clamp(12px, 2vw, 28px);
+}
+
+.home-page .welcome h1 {
+    flex: 0 1 auto;
+    font-size: clamp(34px, 5vw, 68px);
+    line-height: 1.12;
+    letter-spacing: clamp(-2px, -0.12vw, -1px);
+    overflow-wrap: anywhere;
+}
+
+.home-page .welcome .line {
+    flex: 1 1 12%;
+    width: auto;
+    min-width: 18px;
+    max-width: 180px;
+}
+
+/* Keep the About section in the lower half of the visible screen. */
+.home-page .about-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(18px, 3.5vh, 40px) clamp(20px, 5vw, 72px);
+    text-align: center;
+}
+
+.home-page .about-section h2 {
+    margin-top: 0;
+    font-size: clamp(26px, 3.5vw, 42px);
+}
+
+.home-page .about-section > p:last-child {
+    margin-top: 12px;
+    font-size: clamp(14px, 1.4vw, 17px);
+}
+
+/* Keep the background selector inside the visible browser window. */
+.home-page .bg-switcher {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    max-width: calc(100vw - clamp(220px, 20vw, 260px) - 32px);
+    z-index: 10;
+}
+
+/* Tablet and phone layout: sidebar becomes a top navigation area. */
+@media (max-width: 760px) {
+    .home-page {
+        height: auto;
+        min-height: 100vh;
+        min-height: 100dvh;
+        overflow-x: hidden;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .home-page header.sidebar {
+        position: relative;
+        inset: auto;
+        width: 100%;
+        height: auto;
+        padding: 16px 18px;
+        overflow: visible;
+    }
+
+    .home-page .hero,
+    .home-page .about-section {
+        width: 100%;
+        height: auto;
+        min-height: 0;
+        margin-left: 0;
+        flex: 0 0 auto;
+    }
+
+    .home-page .hero {
+        min-height: 42vh;
+        min-height: 42dvh;
+        padding: 48px 18px;
+    }
+
+    .home-page .welcome {
+        gap: 10px;
+    }
+
+    .home-page .welcome h1 {
+        font-size: clamp(32px, 9vw, 54px);
+        letter-spacing: -1.5px;
+    }
+
+    .home-page .welcome .line {
+        min-width: 12px;
+    }
+
+    .home-page .about-section {
+        min-height: 30vh;
+        padding: 30px 22px 48px;
+    }
+
+    .home-page .bg-switcher {
+        top: auto;
+        right: 12px;
+        bottom: 12px;
+        max-width: calc(100vw - 24px);
+        gap: 8px;
+        padding: 9px 11px;
+    }
+
+    .home-page .bg-switcher label {
+        width: 19px;
+        height: 19px;
+        flex-basis: 19px;
+    }
+}
+
+/* Very short desktop screens: reduce spacing so content stays visible. */
+@media (min-width: 761px) and (max-height: 650px) {
+    .home-page .hero {
+        padding-top: 18px;
+        padding-bottom: 18px;
+    }
+
+    .home-page .about-section {
+        padding-top: 14px;
+        padding-bottom: 14px;
+    }
+
+    .home-page .welcome h1 {
+        font-size: clamp(30px, 4.5vw, 54px);
+    }
+}
+
+
+/* =========================================================
+   SPOTYBAI RESPONSIVE REFINEMENT
+========================================================= */
+
+/* Shared viewport and sizing safeguards */
+html {
+    width: 100%;
+    min-width: 320px;
+    min-height: 100%;
+}
+
+body.home-page {
+    width: 100%;
+    min-width: 320px;
+    min-height: 100dvh;
+}
+
+.home-page *,
+.home-page *::before,
+.home-page *::after {
+    min-width: 0;
+}
+
+.home-page .home-background {
+    background-size: cover;
+    background-position: center;
+}
+
+/* Large desktop monitors */
+@media (min-width: 1440px) {
+    .home-page header.sidebar {
+        width: 280px;
+        padding: 34px 24px;
+    }
+
+    .home-page .hero,
+    .home-page .about-section {
+        width: calc(100% - 280px);
+        margin-left: 280px;
+    }
+
+    .home-page .welcome {
+        max-width: 1120px;
+    }
+
+    .home-page .welcome h1 {
+        font-size: clamp(64px, 4.5vw, 82px);
+    }
+
+    .home-page .about-section h2 {
+        font-size: clamp(38px, 3vw, 48px);
+    }
+}
+
+/* Standard laptops and compact desktop screens */
+@media (min-width: 1025px) and (max-width: 1439px) {
+    .home-page header.sidebar {
+        width: 250px;
+        padding: 26px 18px;
+    }
+
+    .home-page .hero,
+    .home-page .about-section {
+        width: calc(100% - 250px);
+        margin-left: 250px;
+    }
+
+    .home-page .logo {
+        font-size: clamp(25px, 2.2vw, 30px);
+    }
+
+    .home-page .welcome h1 {
+        font-size: clamp(42px, 5vw, 66px);
+    }
+
+    .home-page .bg-switcher {
+        top: 22px;
+        right: 20px;
+        gap: 9px;
+        padding: 10px 13px;
+    }
+}
+
+/* Tablets and smaller laptop widths */
+@media (min-width: 761px) and (max-width: 1024px) {
+    .home-page header.sidebar {
+        width: 210px;
+        padding: 24px 14px;
+        gap: 28px;
+    }
+
+    .home-page .hero,
+    .home-page .about-section {
+        width: calc(100% - 210px);
+        margin-left: 210px;
+    }
+
+    .home-page .logo {
+        gap: 9px;
+        font-size: 23px;
+    }
+
+    .home-page .logo-icon {
+        width: 44px;
+        height: 44px;
+    }
+
+    .home-page nav a,
+    .home-page nav .nav-tab {
+        padding: 12px 10px;
+        font-size: 14px;
+    }
+
+    .home-page .hero {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    .home-page .welcome {
+        gap: 12px;
+    }
+
+    .home-page .welcome h1 {
+        font-size: clamp(34px, 4.6vw, 48px);
+        letter-spacing: -1.5px;
+    }
+
+    .home-page .welcome .line {
+        min-width: 10px;
+    }
+
+    .home-page .about-section {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+
+    .home-page .about-section h2 {
+        font-size: clamp(25px, 3.3vw, 34px);
+    }
+
+    .home-page .bg-switcher {
+        top: 18px;
+        right: 16px;
+        gap: 7px;
+        padding: 9px 11px;
+    }
+
+    .home-page .bg-switcher label {
+        width: 18px;
+        height: 18px;
+        flex-basis: 18px;
+    }
+}
+
+/* Phones and small tablets: use a natural scrolling page */
+@media (max-width: 760px) {
+    body.home-page {
+        min-height: 100dvh;
+        height: auto;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .home-page header.sidebar {
+        position: relative;
+        inset: auto;
+        width: 100%;
+        height: auto;
+        min-height: 0;
+        padding: 14px clamp(14px, 4vw, 24px);
+        gap: 14px;
+        overflow: visible;
+    }
+
+    .home-page .logo {
+        font-size: clamp(23px, 6vw, 28px);
+        gap: 10px;
+    }
+
+    .home-page .logo-icon {
+        width: 42px;
+        height: 42px;
+    }
+
+    .home-page nav {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 8px;
+    }
+
+    .home-page nav a,
+    .home-page nav .nav-tab {
+        flex: 1 1 0;
+        justify-content: center;
+        text-align: center;
+        padding: 10px 8px;
+        font-size: 14px;
+    }
+
+    .home-page nav a i,
+    .home-page nav .nav-tab i {
+        margin-right: 6px;
+    }
+
+    .home-page .hero,
+    .home-page .about-section {
+        display: flex;
+        width: 100%;
+        height: auto;
+        min-height: 0;
+        margin: 0;
+        flex: 0 0 auto;
+    }
+
+    .home-page .hero {
+        min-height: clamp(300px, 48svh, 470px);
+        padding: clamp(42px, 8vh, 76px) 16px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .home-page .welcome {
+        width: 100%;
+        max-width: 620px;
+        gap: clamp(8px, 2vw, 16px);
+    }
+
+    .home-page .welcome h1 {
+        flex: 0 1 auto;
+        font-size: clamp(34px, 8vw, 54px);
+        line-height: 1.12;
+        letter-spacing: -1.5px;
+        overflow-wrap: normal;
+    }
+
+    .home-page .welcome .line {
+        flex: 1 1 0;
+        width: auto;
+        min-width: 8px;
+        max-width: 70px;
+    }
+
+    .home-page .about-section {
+        min-height: 220px;
+        padding: 34px 22px 100px;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .home-page .about-section h2 {
+        margin: 0;
+        font-size: clamp(25px, 6vw, 36px);
+        line-height: 1.2;
+    }
+
+    .home-page .about-section > p:last-child {
+        max-width: 560px;
+        margin-top: 12px;
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+    .home-page .bg-switcher {
+        position: fixed;
+        top: auto;
+        right: 12px;
+        bottom: max(12px, env(safe-area-inset-bottom));
+        left: 12px;
+        width: max-content;
+        max-width: calc(100% - 24px);
+        margin-left: auto;
+        gap: 8px;
+        padding: 9px 11px;
+        z-index: 20;
+    }
+
+    .home-page .bg-switcher span {
+        font-size: 11px;
+    }
+
+    .home-page .bg-switcher label {
+        width: 19px;
+        height: 19px;
+        flex-basis: 19px;
+    }
+}
+
+/* Narrow phones */
+@media (max-width: 480px) {
+    .home-page header.sidebar {
+        padding: 12px 14px;
+        gap: 12px;
+    }
+
+    .home-page .logo {
+        font-size: 23px;
+    }
+
+    .home-page .logo-icon {
+        width: 38px;
+        height: 38px;
+    }
+
+    .home-page nav {
+        gap: 6px;
+    }
+
+    .home-page nav a,
+    .home-page nav .nav-tab {
+        padding: 10px 5px;
+        font-size: 13px;
+    }
+
+    .home-page nav a i,
+    .home-page nav .nav-tab i {
+        width: auto;
+        margin-right: 5px;
+    }
+
+    .home-page .hero {
+        min-height: 38svh;
+        padding: 38px 12px;
+    }
+
+    .home-page .welcome {
+        gap: 7px;
+    }
+
+    .home-page .welcome h1 {
+        font-size: clamp(30px, 8.4vw, 40px);
+        letter-spacing: -1.2px;
+    }
+
+    .home-page .welcome .line {
+        min-width: 5px;
+    }
+
+    .home-page .about-section {
+        padding: 28px 18px 96px;
+    }
+
+    .home-page .bg-switcher {
+        right: 8px;
+        bottom: max(8px, env(safe-area-inset-bottom));
+        left: 8px;
+        max-width: calc(100% - 16px);
+        gap: 7px;
+        padding: 8px 9px;
+    }
+
+    .home-page .bg-switcher label {
+        width: 17px;
+        height: 17px;
+        flex-basis: 17px;
+    }
+}
+
+/* Extra-short desktop and laptop displays */
+@media (min-width: 761px) and (max-height: 650px) {
+    .home-page header.sidebar {
+        padding-top: 18px;
+        gap: 22px;
+    }
+
+    .home-page .logo-icon {
+        width: 42px;
+        height: 42px;
+    }
+
+    .home-page .hero {
+        padding-top: 16px;
+        padding-bottom: 16px;
+    }
+
+    .home-page .about-section {
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+
+    .home-page .welcome h1 {
+        font-size: clamp(30px, 4.2vw, 54px);
+    }
+}
+
+/* Very short phone screens */
+@media (max-width: 760px) and (max-height: 620px) {
+    .home-page .hero {
+        min-height: 300px;
+        padding-top: 34px;
+        padding-bottom: 34px;
+    }
+
+    .home-page .about-section {
+        min-height: 190px;
+    }
+}
+
+/* Respect device safe areas and prevent accidental horizontal scrolling */
+@supports (padding: max(0px)) {
+    .home-page header.sidebar {
+        padding-left: max(14px, env(safe-area-inset-left));
+    }
+
+    @media (max-width: 760px) {
+        .home-page header.sidebar {
+            padding-right: max(14px, env(safe-area-inset-right));
+        }
+    }
+}
+
+
+/* =========================================================
+   NCS-STYLE LIVE RHYTHM DIVIDER (HOME PAGE)
+========================================================= */
+.home-page .ncs-rhythm-divider {
+    position: relative;
+    z-index: 2;
+    width: calc(100% - clamp(220px, 20vw, 260px));
+    margin-left: clamp(220px, 20vw, 260px);
+    height: 12%;
+    min-height: 56px;
+    max-height: 92px;
+    padding: 4px clamp(18px, 4vw, 56px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    pointer-events: none;
+}
+
+.home-page .rhythm-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(134, 156, 101, 0.85);
+}
+
+.home-page .ncs-rhythm-canvas {
+    width: 100%;
+    height: 100%;
+    max-width: 920px;
+    display: block;
+    filter: drop-shadow(0 0 10px rgba(29, 185, 84, 0.28));
+}
+
+@media (min-width: 1440px) {
+    .home-page .ncs-rhythm-divider {
+        width: calc(100% - 280px);
+        margin-left: 280px;
+    }
+}
+
+@media (min-width: 1025px) and (max-width: 1439px) {
+    .home-page .ncs-rhythm-divider {
+        width: calc(100% - 250px);
+        margin-left: 250px;
+    }
+}
+
+@media (min-width: 761px) and (max-width: 1024px) {
+    .home-page .ncs-rhythm-divider {
+        width: calc(100% - 210px);
+        margin-left: 210px;
+    }
+}
+
+@media (max-width: 760px) {
+    .home-page .ncs-rhythm-divider {
+        width: 100%;
+        margin-left: 0;
+        height: 64px;
+        padding: 4px 16px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .home-page .ncs-rhythm-canvas {
+        opacity: 0.5;
+    }
+}
+
+
+/* Shuffle and repeat-once controls */
+.music-page .mode-button {
+    color: #B3B3B3;
+    position: relative;
+}
+
+.music-page .mode-button.is-active {
+    color: #1DB954;
+}
+
+.music-page .mode-button.is-active::after {
+    content: "";
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: currentColor;
+    bottom: 1px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.music-page .mode-button:focus-visible {
+    outline: 2px solid #1DB954;
+    outline-offset: 3px;
+}
+
+@media (max-width: 760px) {
+    .music-page .player-bar {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 8px;
+    }
+
+    .music-page .transport {
+        gap: clamp(8px, 3vw, 18px);
+    }
+}
+
+
+/* Make the repeat-once control visible with Font Awesome Free icons. */
+.music-page .repeat-once-button {
+    position: relative;
+    overflow: visible;
+}
+
+.music-page .repeat-once-button > i {
+    font-size: 17px;
+}
+
+.music-page .repeat-one-mark {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    min-width: 10px;
+    height: 10px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #181818;
+    color: #B3B3B3;
+    font-size: 8px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.music-page .repeat-once-button.is-active .repeat-one-mark {
+    background: #1DB954;
+    color: #121212;
+}
+
+@media (max-width: 760px) {
+    .music-page .transport {
+        gap: clamp(6px, 2.5vw, 16px);
+    }
+}
+
+/* Now Playing Media & Lyrics Collapse Controls */
+.now-playing-track {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+}
+
+.now-playing-track-info {
+	min-width: 0;
+	flex: 1;
+}
+
+.now-playing-track-info h2,
+.now-playing-track-info p {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.lyrics-heading-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	margin-bottom: 12px;
+}
+
+.lyrics-heading-row h3 {
+	margin-bottom: 0;
+	font-size: 14px;
+}
+
+.collapse-chip-button {
+	flex: 0 0 auto;
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	padding: 4px 9px;
+	border: 1px solid rgba(255, 255, 255, 0.14);
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.08);
+	color: #E5E5E5;
+	font: inherit;
+	font-size: 11px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.collapse-chip-button:hover {
+	background: rgba(29, 185, 84, 0.18);
+	border-color: #1DB954;
+	color: #FFFFFF;
+}
+
+.collapse-chip-button[aria-expanded="false"] {
+	background: rgba(29, 185, 84, 0.16);
+	border-color: rgba(29, 185, 84, 0.55);
+	color: #1DB954;
+}
+
+.media-stage.is-collapsed {
+	display: none;
+}
+
+.lyrics-panel.is-section-collapsed {
+	flex: 0 0 auto;
+	min-height: 0;
+	padding-bottom: 12px;
+}
+
+.lyrics-panel.is-section-collapsed .lyrics-heading-row {
+	margin-bottom: 0;
+}
+
+.lyrics-panel.is-section-collapsed .lyrics-content,
+.lyrics-panel.is-section-collapsed .lyrics-toggle {
+	display: none;
+}
+
+/* Player Bar: Queue Button, Playback Speed & Sleep Timer */
+.player-options {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+.player-pill-button,
+.compact-control {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	height: 32px;
+	padding: 0 10px;
+	border: 1px solid rgba(255, 255, 255, 0.14);
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.07);
+	color: #E5E5E5;
+	font: inherit;
+	font-size: 12px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.player-pill-button:hover,
+.compact-control:hover {
+	background: rgba(29, 185, 84, 0.16);
+	border-color: rgba(29, 185, 84, 0.6);
+	color: #FFFFFF;
+}
+
+.player-pill-button[aria-expanded="true"],
+.compact-control.is-active {
+	background: rgba(29, 185, 84, 0.18);
+	border-color: #1DB954;
+	color: #1DB954;
+}
+
+.compact-control select {
+	border: none;
+	background: transparent;
+	color: inherit;
+	font: inherit;
+	font-size: 12px;
+	font-weight: 600;
+	cursor: pointer;
+	outline: none;
+}
+
+.compact-control select option {
+	background: #181818;
+	color: #FFFFFF;
+}
+
+.queue-badge,
+.sleep-remaining {
+	padding: 1px 6px;
+	border-radius: 999px;
+	background: #1DB954;
+	color: #0B1910;
+	font-size: 11px;
+	font-weight: 700;
+	line-height: 1.4;
+}
+
+/* Up Next / Queue Drawer */
+.queue-drawer {
+	position: fixed;
+	top: 16px;
+	right: 16px;
+	bottom: 108px;
+	z-index: 45;
+	width: min(360px, calc(100vw - 32px));
+	display: flex;
+	flex-direction: column;
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	border-radius: 18px;
+	background: rgba(20, 20, 20, 0.96);
+	backdrop-filter: blur(18px);
+	box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+	overflow: hidden;
+}
+
+.queue-drawer[hidden] {
+	display: none;
+}
+
+.queue-drawer-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	padding: 16px 18px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.queue-drawer-header h2 {
+	margin: 0;
+	font-size: 17px;
+}
+
+.queue-drawer-header p {
+	margin: 2px 0 0;
+	font-size: 12px;
+}
+
+.queue-drawer-header-actions {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.queue-drawer-body {
+	flex: 1;
+	overflow-y: auto;
+	padding: 14px 16px 18px;
+	display: flex;
+	flex-direction: column;
+	gap: 18px;
+}
+
+.queue-section h3 {
+	margin: 0 0 8px;
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: #B3B3B3;
+}
+
+.queue-section-title-row {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 8px;
+	margin-bottom: 8px;
+}
+
+.queue-section-title-row h3 {
+	margin-bottom: 0;
+}
+
+.queue-section-title-row span {
+	font-size: 11px;
+}
+
+.queue-list {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.queue-item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 7px 9px;
+	border: 1px solid rgba(255, 255, 255, 0.07);
+	border-radius: 10px;
+	background: rgba(255, 255, 255, 0.04);
+	transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.queue-item:hover {
+	background: rgba(255, 255, 255, 0.08);
+	border-color: rgba(29, 185, 84, 0.45);
+}
+
+.queue-item.is-now-playing {
+	border-color: rgba(29, 185, 84, 0.6);
+	background: rgba(29, 185, 84, 0.12);
+}
+
+.queue-item-play {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	border: none;
+	background: transparent;
+	color: inherit;
+	font: inherit;
+	text-align: left;
+	cursor: pointer;
+	padding: 0;
+}
+
+.queue-item-play img {
+	width: 38px;
+	height: 38px;
+	border-radius: 7px;
+	object-fit: cover;
+	flex: 0 0 auto;
+}
+
+.queue-item-meta {
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.queue-item-meta strong,
+.queue-item-meta span {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.queue-item-meta strong {
+	font-size: 13px;
+}
+
+.queue-item-meta span {
+	font-size: 11px;
+	color: #B3B3B3;
+}
+
+.queue-empty-note {
+	margin: 0;
+	font-size: 12px;
+	color: #9A9A9A;
+}
+
+/* Keep "Show less" / "Show more" visible above the bottom player bar */
+.now-playing-content {
+	min-height: 0;
+	padding-bottom: 124px;
+}
+
+.lyrics-panel {
+	min-height: 0;
+}
+
+.lyrics-panel .lyrics-toggle {
+	flex: 0 0 auto;
+	margin-top: 10px;
+	position: relative;
+	z-index: 2;
+}
+
+/* Collapse button inside the right Now Playing panel header */
+.now-playing-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+}
+
+/* =========================================================
+   MUSIC SECTION BACKGROUND COVER
+========================================================= */
+body.music-page {
+	position: relative;
+	background: var(--color-background);
+}
+
+.music-page .music-content {
+	position: relative;
+	isolation: isolate;
+	--music-bg-image: none;
+}
+
+.music-page .music-content::before {
+	content: "";
+	position: absolute;
+	inset: 0 0 auto 0;
+	height: 540px;
+	z-index: -1;
+	pointer-events: none;
+	background-image:
+		linear-gradient(
+			to bottom,
+			rgba(0, 0, 0, 0.35) 0%,
+			rgba(0, 0, 0, 0.75) 300px,
+			#000000 540px
+		),
+		var(--music-bg-image);
+	background-size: cover;
+	background-position: top center;
+	background-repeat: no-repeat;
+	transition: background-image 0.35s ease;
+}

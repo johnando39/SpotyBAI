@@ -1,0 +1,158 @@
+/*
+  SpotyBAI music-page sidebar collapse.
+  Load this AFTER test.css.
+*/
+
+.music-page {
+    --music-sidebar-width: 300px;
+}
+
+/* Sidebar and page layout */
+.music-page > header.sidebar {
+    position: fixed;
+    z-index: 30;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: var(--music-sidebar-width);
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    transition: transform 260ms ease;
+    will-change: transform;
+}
+
+.music-page > main.music-content {
+    box-sizing: border-box;
+    width: calc(100% - var(--music-sidebar-width));
+    margin-left: var(--music-sidebar-width);
+    transition: width 260ms ease, margin-left 260ms ease;
+}
+
+.music-page > .player-bar {
+    left: var(--music-sidebar-width);
+    width: calc(100% - var(--music-sidebar-width));
+    box-sizing: border-box;
+    transition: left 260ms ease, width 260ms ease;
+}
+
+/* Always-visible tab at the edge of the sidebar */
+.music-page .sidebar-collapse-toggle {
+    position: fixed;
+    z-index: 50;
+    top: 22px;
+    left: calc(var(--music-sidebar-width) - 1px);
+    width: 38px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 1px solid rgba(255,255,255,.16);
+    border-left: 0;
+    border-radius: 0 9px 9px 0;
+    background: #699950;
+    color: #07140b;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 3px 14px rgba(0,0,0,.25);
+    transition: left 260ms ease, background 180ms ease;
+}
+
+.music-page .sidebar-collapse-toggle:hover {
+    background: #1ed760;
+}
+
+.music-page .sidebar-collapse-toggle:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+}
+
+/* Fully hide the sidebar and let the playlist/player use the full width */
+.music-page.sidebar-collapsed {
+    --music-sidebar-width: 0px;
+}
+
+.music-page.sidebar-collapsed > header.sidebar {
+    transform: translateX(-100%);
+    pointer-events: none;
+}
+
+.music-page.sidebar-collapsed > main.music-content {
+    width: 100%;
+    margin-left: 0;
+}
+
+.music-page.sidebar-collapsed > .player-bar {
+    left: 0;
+    width: 100%;
+}
+
+.music-page.sidebar-collapsed .sidebar-collapse-toggle {
+    left: 0;
+}
+
+/* Tablet layout */
+@media (min-width: 761px) and (max-width: 1024px) {
+    .music-page {
+        --music-sidebar-width: 240px;
+    }
+}
+
+/* Mobile: sidebar is a top navigation block; slide it upward instead */
+@media (max-width: 760px) {
+    .music-page > header.sidebar {
+        position: relative;
+        top: auto;
+        right: auto;
+        bottom: auto;
+        left: auto;
+        width: 100%;
+        max-width: none;
+        transform: translateY(0);
+        transition: transform 260ms ease, margin-bottom 260ms ease;
+    }
+
+    .music-page > main.music-content {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .music-page > .player-bar {
+        left: 0;
+        width: 100%;
+    }
+
+    .music-page .sidebar-collapse-toggle {
+        top: 15px;
+        right: 14px;
+        left: auto;
+        width: 40px;
+        height: 40px;
+        border: 1px solid rgba(255,255,255,.16);
+        border-radius: 8px;
+    }
+
+    .music-page.sidebar-collapsed > header.sidebar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        transform: translateY(-110%);
+        pointer-events: none;
+    }
+
+    .music-page.sidebar-collapsed .sidebar-collapse-toggle {
+        top: 12px;
+        right: 12px;
+        left: auto;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .music-page > header.sidebar,
+    .music-page > main.music-content,
+    .music-page > .player-bar,
+    .music-page .sidebar-collapse-toggle {
+        transition: none;
+    }
+}
