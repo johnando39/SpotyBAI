@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#121212">
+<title>Music | SpotyBAI</title>
+<link rel="stylesheet" href="test.css?v=6">
+<link rel="stylesheet" href="sidebar-collapse.css?v=6">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<script src="test.js?v=6" defer></script>
+</head>
+
+<body class="music-page now-playing-hidden">
+<div class="glow one"></div>
+<div class="glow two"></div>
+
+<header class="sidebar" id="music-sidebar">
+    <a class="logo" href="index.html" aria-label="SpotyBAI home">
+        <img class="logo-icon" src="images/Black and Grey Simple Icon Music Logo.png" alt="Logo">
+        <div>Spoty<span>BAI</span></div>
+    </a>
+
+    <nav aria-label="Main navigation">
+        <a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a>
+        <button type="button" class="nav-tab is-active" data-view="all" aria-pressed="true">
+            <i class="fa-solid fa-music" aria-hidden="true"></i> Music
+        </button>
+        <button type="button" class="nav-tab" id="favorites-tab" data-view="favorites" aria-pressed="false">
+            <i class="fa-solid fa-heart" aria-hidden="true"></i> Favorites
+        </button>
+    </nav>
+
+    <section class="sidebar-playlists" aria-label="Playlists">
+        <div class="sidebar-playlists-header">
+            <span class="sidebar-section-label">Playlists</span>
+            <button type="button" id="create-playlist-button" class="create-playlist-button" title="Create a new playlist">
+                <i class="fa-solid fa-plus" aria-hidden="true"></i> New
+            </button>
+        </div>
+        <div id="custom-playlist-list" class="custom-playlist-list" aria-live="polite"></div>
+    </section>
+
+    <label class="search">
+        <span aria-hidden="true"><i class="fa-solid fa-magnifying-glass"></i></span>
+        <input id="track-search" type="search" aria-label="Search songs" placeholder="Search songs...">
+    </label>
+</header>
+
+<!-- This toggle stays visible even while the sidebar is hidden. -->
+<button
+    id="sidebar-toggle"
+    class="sidebar-collapse-toggle"
+    type="button"
+    aria-label="Hide sidebar"
+    aria-controls="music-sidebar"
+    aria-expanded="true"
+    title="Hide sidebar">
+    <i class="fa-solid fa-angles-left" aria-hidden="true"></i>
+</button>
+
+<main class="music-content">
+    <section class="library" aria-labelledby="library-title">
+        <div class="playlist-header">
+            <img class="playlist-cover" src="images/Black and Grey Simple Icon Music Logo.png" alt="Mga Yearner playlist cover">
+            <div class="playlist-details">
+                <p class="playlist-type" id="playlist-type">Public Playlist</p>
+                <h1 id="library-title">Mga Yearner</h1>
+                <div class="playlist-meta">
+                    <img src="images/Black and Grey Simple Icon Music Logo.png" alt="playlist">
+                    <strong>SpotyBAI</strong>
+                    <span aria-hidden="true">·</span>
+                    <span id="playlist-summary">10 songs, about 38 min 20 sec</span>
+                </div>
+                <div id="playlist-actions" class="playlist-actions" hidden>
+                    <button type="button" id="rename-playlist-button" class="secondary-action-button">
+                        <i class="fa-solid fa-pen" aria-hidden="true"></i> Rename Playlist
+                    </button>
+                    <button type="button" id="delete-playlist-button" class="danger-action-button">
+                        <i class="fa-solid fa-trash" aria-hidden="true"></i> Delete Playlist
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="track-list" class="track-list" aria-live="polite"></div>
+    </section>
+</main>
+
+<audio id="audio-player" preload="metadata"></audio>
+
+<section id="player" class="player-bar" aria-label="Music player">
+    <div class="player-track">
+        <img id="current-cover" class="current-cover" alt="">
+        <div class="current-track">
+            <strong id="current-title">Choose a song</strong>
+            <span id="current-artist" class="muted">Your library</span>
+        </div>
+        <button id="favorite-button" class="icon-button favorite-button" type="button"
+            aria-label="Add to favorites" aria-pressed="false" title="Add to favorites" disabled>
+            <i class="fa-regular fa-heart" aria-hidden="true"></i>
+        </button>
+        <button id="add-to-playlist-button" class="icon-button playlist-add-button" type="button"
+            aria-label="Add song to playlist" title="Add song to playlist" disabled>
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+        </button>
+        <button id="now-playing-button" class="text-button" type="button" aria-controls="now-playing-panel" aria-expanded="false">Show now playing</button>
+    </div>
+
+    <div class="player-controls">
+        <div class="transport">
+            <button id="shuffle-button" class="icon-button mode-button" type="button"
+                aria-label="Enable shuffle" aria-pressed="false" title="Shuffle">
+                <i class="fa-solid fa-shuffle" aria-hidden="true"></i>
+            </button>
+            <button id="previous-button" class="icon-button" type="button" aria-label="Previous song (Shift+Left)"><i class="fa-solid fa-backward"></i></button>
+            <button id="play-button" class="play-button player-play" type="button" aria-label="Play (Space)"><i class="fa-solid fa-play"></i></button>
+            <button id="next-button" class="icon-button" type="button" aria-label="Next song (Shift+Right)"><i class="fa-solid fa-forward"></i></button>
+            <button id="repeat-button" class="icon-button mode-button repeat-once-button" type="button"
+                aria-label="Repeat once is off" aria-pressed="false" title="Repeat once">
+                <i class="fa-solid fa-repeat" aria-hidden="true"></i>
+                <span class="repeat-one-mark" aria-hidden="true">1</span>
+            </button>
+        </div>
+        <div class="timeline">
+            <span id="elapsed-time">0:00</span>
+            <input id="seek-bar" type="range" min="0" max="1000" value="0" aria-label="Seek through song" disabled>
+            <span id="total-time">0:00</span>
+        </div>
+    </div>
+
+    <div class="player-options">
+        <button id="queue-drawer-button" class="player-pill-button" type="button"
+            aria-controls="queue-drawer" aria-expanded="false" title="Open Up Next queue">
+            <i class="fa-solid fa-list-ol" aria-hidden="true"></i>
+            <span>Queue</span>
+            <span id="queue-count-badge" class="queue-badge" hidden>0</span>
+        </button>
+
+        <label class="compact-control" for="playback-speed-select" title="Playback speed">
+            <i class="fa-solid fa-gauge-high" aria-hidden="true"></i>
+            <select id="playback-speed-select" aria-label="Playback speed">
+                <option value="0.75">0.75x</option>
+                <option value="1" selected>1x</option>
+                <option value="1.25">1.25x</option>
+                <option value="1.5">1.5x</option>
+            </select>
+        </label>
+
+        <label class="compact-control" for="sleep-timer-select" title="Sleep timer">
+            <i class="fa-regular fa-moon" aria-hidden="true"></i>
+            <select id="sleep-timer-select" aria-label="Sleep timer">
+                <option value="off" selected>Sleep: Off</option>
+                <option value="end">End of song</option>
+                <option value="15">15 min</option>
+                <option value="30">30 min</option>
+                <option value="60">60 min</option>
+            </select>
+            <span id="sleep-timer-remaining" class="sleep-remaining" hidden></span>
+        </label>
+
+        <div class="volume-control">
+            <button id="mute-button" class="icon-button" type="button" aria-label="Mute (M)"><i class="fa-solid fa-volume-high"></i></button>
+            <input id="volume-bar" type="range" min="0" max="1" step="0.01" value="0.75" aria-label="Volume">
+        </div>
+    </div>
+
+    <p id="player-status" class="player-status" role="status" aria-live="polite"></p>
+</section>
+
+<!-- Up Next / Queue Drawer -->
+<aside id="queue-drawer" class="queue-drawer" aria-label="Up Next Queue" hidden>
+    <div class="queue-drawer-header">
+        <div>
+            <h2>Up Next</h2>
+            <p id="queue-context-label" class="muted">Playing from Mga Yearner</p>
+        </div>
+        <div class="queue-drawer-header-actions">
+            <button type="button" id="clear-queue-button" class="secondary-action-button" hidden>Clear Queue</button>
+            <button type="button" id="close-queue-drawer" class="icon-button" aria-label="Close queue drawer">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="queue-drawer-body">
+        <section class="queue-section" aria-labelledby="queue-now-heading">
+            <h3 id="queue-now-heading">Now Playing</h3>
+            <div id="queue-now-playing" class="queue-list"></div>
+        </section>
+
+        <section class="queue-section" aria-labelledby="queue-manual-heading">
+            <div class="queue-section-title-row">
+                <h3 id="queue-manual-heading">Queued Next</h3>
+                <span class="muted">Plays before library</span>
+            </div>
+            <div id="queue-manual-list" class="queue-list"></div>
+        </section>
+
+        <section class="queue-section" aria-labelledby="queue-upcoming-heading">
+            <div class="queue-section-title-row">
+                <h3 id="queue-upcoming-heading">Next From Library</h3>
+                <span id="queue-shuffle-note" class="muted"></span>
+            </div>
+            <div id="queue-upcoming-list" class="queue-list"></div>
+        </section>
+    </div>
+</aside>
+
+<!-- Playlist Name Modal (Create & Rename) -->
+<div id="playlist-name-modal-backdrop" class="modal-backdrop" hidden>
+    <div id="playlist-name-modal" class="modal-card" role="dialog" aria-modal="true" aria-labelledby="playlist-name-modal-title">
+        <div class="modal-header">
+            <h2 id="playlist-name-modal-title">Create Playlist</h2>
+            <button type="button" id="close-playlist-name-modal" class="icon-button" aria-label="Close modal">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+        </div>
+        <form id="playlist-name-form" class="modal-form">
+            <label for="playlist-name-input" class="modal-label">Playlist name</label>
+            <input
+                type="text"
+                id="playlist-name-input"
+                class="modal-input"
+                placeholder="e.g., Late Night Drives"
+                maxlength="60"
+                required
+            >
+            <p id="playlist-name-error" class="modal-error" role="alert" hidden></p>
+            <div class="modal-footer modal-footer-actions">
+                <button type="button" id="cancel-playlist-name-button" class="secondary-action-button">Cancel</button>
+                <button type="submit" id="save-playlist-name-button" class="primary-action-button">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete Playlist Confirmation Modal -->
+<div id="playlist-delete-modal-backdrop" class="modal-backdrop" hidden>
+    <div id="playlist-delete-modal" class="modal-card" role="dialog" aria-modal="true" aria-labelledby="playlist-delete-modal-title">
+        <div class="modal-header">
+            <h2 id="playlist-delete-modal-title">Delete Playlist?</h2>
+            <button type="button" id="close-playlist-delete-modal" class="icon-button" aria-label="Close modal">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+        </div>
+        <p id="playlist-delete-message" class="muted modal-copy"></p>
+        <div class="modal-footer modal-footer-actions">
+            <button type="button" id="cancel-playlist-delete-button" class="secondary-action-button">Cancel</button>
+            <button type="button" id="confirm-playlist-delete-button" class="danger-action-button">
+                <i class="fa-solid fa-trash" aria-hidden="true"></i> Delete
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Playlist Picker Modal -->
+<div id="playlist-modal-backdrop" class="modal-backdrop" hidden>
+    <div id="playlist-modal" class="modal-card" role="dialog" aria-modal="true" aria-labelledby="playlist-modal-title">
+        <div class="modal-header">
+            <h2 id="playlist-modal-title">Add to Playlist</h2>
+            <button type="button" id="close-playlist-modal" class="icon-button" aria-label="Close modal">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+        </div>
+        <p id="playlist-modal-song" class="muted modal-subtitle"></p>
+        <div id="playlist-picker-list" class="playlist-picker-list"></div>
+        <div class="modal-footer">
+            <button type="button" id="modal-new-playlist-button" class="secondary-action-button">
+                <i class="fa-solid fa-plus" aria-hidden="true"></i> Create &amp; Add
+            </button>
+        </div>
+    </div>
+</div>
+
+<aside id="now-playing-panel" class="now-playing-panel" aria-label="Now playing" hidden>
+    <div id="now-playing-backdrop" class="now-playing-backdrop" aria-hidden="true"></div>
+    <div class="now-playing-content">
+        <div class="now-playing-header">
+            <strong id="now-playing-header-title">Mga Yearner</strong>
+            <button
+                type="button"
+                id="now-playing-collapse-button"
+                class="collapse-chip-button"
+                aria-controls="now-playing-panel"
+                aria-expanded="true"
+                aria-label="Collapse now playing panel"
+                title="Collapse now playing panel">
+                <i class="fa-solid fa-angles-right" aria-hidden="true"></i> Collapse
+            </button>
+        </div>
+        <div id="media-stage" class="media-stage">
+            <video id="track-video" class="lyrics-cover" muted loop playsinline preload="metadata" hidden></video>
+            <img id="lyrics-cover" class="lyrics-cover" alt="" hidden>
+        </div>
+        <div class="now-playing-track">
+            <div class="now-playing-track-info">
+                <h2 id="lyrics-title">Choose a song</h2>
+                <p id="lyrics-artist" class="muted">Your library</p>
+            </div>
+            <button type="button" id="toggle-media-collapse" class="collapse-chip-button" aria-expanded="true" title="Collapse video/cover">
+                <i class="fa-solid fa-video-slash" aria-hidden="true"></i> Collapse Media
+            </button>
+        </div>
+        <section id="lyrics-panel" class="lyrics-panel is-collapsed" aria-labelledby="lyrics-heading">
+            <div class="lyrics-heading-row">
+                <h3 id="lyrics-heading">Lyrics</h3>
+                <button type="button" id="toggle-lyrics-collapse" class="collapse-chip-button" aria-expanded="true" title="Collapse lyrics">
+                    <i class="fa-solid fa-chevron-down" aria-hidden="true"></i> Collapse Lyrics
+                </button>
+            </div>
+            <div id="lyrics-content" class="lyrics-content" aria-live="off"></div>
+            <button id="toggle-lyrics" class="lyrics-toggle" type="button" aria-expanded="false" hidden>Show more</button>
+        </section>
+    </div>
+</aside>
+
+<script>
+(() => {
+    const toggle = document.getElementById("sidebar-toggle");
+    const body = document.body;
+
+    if (!toggle) return;
+
+    toggle.addEventListener("click", () => {
+        const isCollapsed = body.classList.toggle("sidebar-collapsed");
+
+        toggle.setAttribute("aria-expanded", String(!isCollapsed));
+        toggle.setAttribute(
+            "aria-label",
+            isCollapsed ? "Show sidebar" : "Hide sidebar"
+        );
+        toggle.setAttribute(
+            "title",
+            isCollapsed ? "Show sidebar" : "Hide sidebar"
+        );
+
+        toggle.innerHTML = isCollapsed
+            ? '<i class="fa-solid fa-angles-right" aria-hidden="true"></i>'
+            : '<i class="fa-solid fa-angles-left" aria-hidden="true"></i>';
+    });
+})();
+</script>
+</body>
+</html>
